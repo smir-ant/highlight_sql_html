@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .colored {
+      position: absolute;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .code {
+      outline: none;
+    }
+
+    div {
+      font-family: monospace;
+      font-size: 1rem;
+    }
+
+    .highlight {
+      color: #3a6ed7;
+    }
+
+    .comment .highlight,
+    .comment {
+      color: #6a737d;
+    }
+  </style>
+</head>
+<body>
+  <div class="colored"></div>
+  <div contenteditable="true" class="code">select * from tablename;<br>--where id > 123</div>
+
+
+  <script>
+    let colored = document.querySelector(".colored");
+    let code = document.querySelector(".code");
+
+    const sqlKeywords = ["SELECT", "FROM", "WHERE", "INSERT", "UPDATE", "DELETE", "CREATE", "DROP", "ALTER", "TABLE", "JOIN", "INNER", "LEFT", "RIGHT", "FULL", "ON", "AND", "OR", "NOT", "NULL", "AS", "DISTINCT", "GROUP BY", "ORDER BY", "HAVING", "LIMIT", "OFFSET", "UNION", "ALL"];
+
+    function getHighlight(text) {
+      const regex = new RegExp(`\\b(${sqlKeywords.join('|')})\\b`, 'gi');
+      return text.replace(regex, '<span class="highlight">$1</span>').replace(/(--.*$)/gm, '<span class="comment">$1</span>');
+    }
+    function highlightEl() {
+      colored.innerHTML = getHighlight(code.innerHTML);
+    }
+    code.addEventListener("input", highlightEl);
+    highlightEl();
+  </script>
+</body>
+</html>
